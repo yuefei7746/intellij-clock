@@ -6,11 +6,13 @@ import com.intellij.util.Consumer
 import java.awt.Component
 import java.awt.event.MouseEvent
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.swing.Timer
 
 class ClockWidget : StatusBarWidget {
     private var statusBar: StatusBar? = null
-    private val timer = Timer(1000) { statusBar?.updateWidget(ID()) }
+    private val timer = Timer(60_000) { statusBar?.updateWidget(ID()) }
 
     override fun install(statusBar: StatusBar) {
         this.statusBar = statusBar
@@ -30,9 +32,10 @@ class ClockWidget : StatusBarWidget {
         override fun getAlignment(): Float = Component.CENTER_ALIGNMENT
 
         override fun getText(): String {
-            return LocalDateTime.now().run {
-                "%02d:%02d".format(hour, minute)
-            }
+            val pattern = "MMMdd E HH:mm"
+            val locale = Locale.getDefault()
+            val formatter = DateTimeFormatter.ofPattern(pattern, locale)
+            return LocalDateTime.now().format(formatter)
         }
     }
 
